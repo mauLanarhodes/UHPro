@@ -3,7 +3,7 @@ import {
   View, Text, ScrollView, StyleSheet,
   SafeAreaView, StatusBar, Platform, TouchableOpacity,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Screen } from './src/types/navigation';
 import ProactiveSuggestionCard from './components/home/ProactiveSuggestionCard';
 import TaskAlertCard from './components/home/TaskAlertCard';
 import ServiceGridCard from './components/home/ServiceGridCard';
@@ -12,11 +12,17 @@ import NewsCard from './components/home/NewsCard';
 import FooterNav from './components/layout/FooterNav';
 import FloatingAIButton from './components/ai/FloatingAIButton';
 
-const universityServices = [
-  { icon: 'calendar-outline', label: 'Schedule &\nAssignment' },
-  { icon: 'bus-outline', label: 'Shuttle' },
+interface Props {
+  onNavigate: (screen: Screen) => void;
+  activeTab: string;
+}
+
+// Each service card can optionally navigate to a screen
+const universityServices: { icon: string; label: string; screen?: Screen }[] = [
+  { icon: 'calendar-outline',   label: 'Schedule &\nAssignment', screen: 'schedule' },
+  { icon: 'bus-outline',        label: 'Shuttle' },
   { icon: 'restaurant-outline', label: 'Dining' },
-  { icon: 'map-outline', label: 'Campus\nMap' },
+  { icon: 'map-outline',        label: 'Campus\nMap',            screen: 'map' },
 ];
 
 const studentServices = [
@@ -26,52 +32,21 @@ const studentServices = [
   { label: 'UH\nEvents' },
 ];
 
-// 3 Daily Focus cards
 const dailyFocusItems = [
-  {
-    title: 'Low Balance Alert',
-    subtitle: 'YOUR SHASTABUCKS BALANCE IS LOW → REFILL NOW VIA SETTINGS',
-  },
-  {
-    title: 'Tasks',
-    subtitle: 'COSC 2436 ASSIGNMENT 4 IS DUE TONIGHT → FINISH AS SOON AS POSSIBLE',
-  },
-  {
-    title: 'Exam Prep',
-    subtitle: 'START REVIEWING RECURSION & SORTING PROBLEMS FOR YOUR EXAM NEXT THURSDAY',
-  },
+  { title: 'Low Balance Alert', subtitle: 'YOUR SHASTABUCKS BALANCE IS LOW → REFILL NOW VIA SETTINGS' },
+  { title: 'Tasks',             subtitle: 'COSC 2436 ASSIGNMENT 4 IS DUE TONIGHT → FINISH AS SOON AS POSSIBLE' },
+  { title: 'Exam Prep',         subtitle: 'START REVIEWING RECURSION & SORTING PROBLEMS FOR YOUR EXAM NEXT THURSDAY' },
 ];
 
 const newsItems = [
-  {
-    category: 'Cougar News',
-    headline: 'New study spaces opening in MD Anderson Library next week.',
-    color: '#2A7B5A',
-    emoji: '🐾',
-  },
-  {
-    category: 'Campus Bites',
-    headline: 'Free pizza at Student Center South today from 1–3 PM',
-    color: '#C8102E',
-    emoji: '🍕',
-  },
-  {
-    category: 'Transit Updates',
-    headline: 'Shuttle Route B delays expected today. check live updates before heading out.',
-    color: '#B04000',
-    emoji: '🚌',
-  },
+  { category: 'Cougar News',     headline: 'New study spaces opening in MD Anderson Library next week.', color: '#2A7B5A', emoji: '🐾' },
+  { category: 'Campus Bites',    headline: 'Free pizza at Student Center South today from 1–3 PM',        color: '#C8102E', emoji: '🍕' },
+  { category: 'Transit Updates', headline: 'Shuttle Route B delays expected today. check live updates before heading out.', color: '#B04000', emoji: '🚌' },
 ];
 
-export default function HomeScreen() {
-  const [activeTab, setActiveTab] = useState('home');
+export default function HomeScreen({ onNavigate, activeTab }: Props) {
   const [dismissed, setDismissed] = useState(false);
-  // Cycles 0 → 1 → 2 → 0
   const [activeFocusIndex, setActiveFocusIndex] = useState(0);
-
-  const handleBadgePress = () => {
-    setActiveFocusIndex((prev) => (prev + 1) % dailyFocusItems.length);
-  };
 
   const currentFocus = dailyFocusItems[activeFocusIndex];
   const badge = `${activeFocusIndex + 1}/${dailyFocusItems.length}`;
@@ -92,13 +67,11 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* SCROLLABLE CONTENT */}
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Proactive Suggestion */}
           {!dismissed && (
             <ProactiveSuggestionCard
               message={"Class COSC 3340 in 10 mins.\nCatch the red shuttle in 2 mins?"}
@@ -114,18 +87,14 @@ export default function HomeScreen() {
               <Text style={styles.viewAll}>VIEW ALL</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={handleBadgePress}
-            style={styles.taskCardWrapper}
-          >
+          <View style={styles.taskCardWrapper}>
             <TaskAlertCard
               title={currentFocus.title}
               subtitle={currentFocus.subtitle}
               badge={badge}
-              onBadgePress={handleBadgePress}
+              onBadgePress={() => setActiveFocusIndex((p) => (p + 1) % dailyFocusItems.length)}
             />
-          </TouchableOpacity>
+          </View>
 
           {/* University Services */}
           <View style={styles.sectionHeader}>
@@ -133,7 +102,12 @@ export default function HomeScreen() {
           </View>
           <View style={styles.servicesGrid}>
             {universityServices.map((s, i) => (
-              <ServiceGridCard key={i} icon={s.icon} label={s.label} />
+              <ServiceGridCard
+                key={i}
+                icon={s.icon}
+                label={s.label}
+                onPress={s.screen ? () => onNavigate(s.screen!) : undefined}
+              />
             ))}
           </View>
 
@@ -152,16 +126,10 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
 
-          {/* News Section */}
+          {/* News */}
           <View style={styles.newsSection}>
             {newsItems.map((n, i) => (
-              <NewsCard
-                key={i}
-                category={n.category}
-                headline={n.headline}
-                color={n.color}
-                emoji={n.emoji}
-              />
+              <NewsCard key={i} category={n.category} headline={n.headline} color={n.color} emoji={n.emoji} />
             ))}
           </View>
 
@@ -170,7 +138,7 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       <FloatingAIButton onPress={() => {}} />
-      <FooterNav activeTab={activeTab} onTabPress={setActiveTab} />
+      <FooterNav activeTab={activeTab} onNavigate={onNavigate} />
     </View>
   );
 }
@@ -183,10 +151,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16,
     backgroundColor: '#FFFFFF', gap: 12,
   },
-  avatarCircle: {
-    width: 44, height: 44, borderRadius: 22,
-    backgroundColor: '#F0E0E0', alignItems: 'center', justifyContent: 'center',
-  },
+  avatarCircle: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#F0E0E0', alignItems: 'center', justifyContent: 'center' },
   avatarEmoji: { fontSize: 22 },
   headerText: { flex: 1 },
   welcomeText: { fontSize: 12, color: '#888', fontWeight: '500' },
@@ -200,14 +165,7 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 16, fontWeight: '700', color: '#1A1A1A' },
   viewAll: { fontSize: 12, fontWeight: '700', color: '#C8102E', letterSpacing: 0.5 },
   taskCardWrapper: { paddingHorizontal: 16, marginBottom: 20 },
-  // Fixed 2x2 grid with equal sizing
-  servicesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    gap: 12,
-    marginBottom: 20,
-  },
+  servicesGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 12, marginBottom: 20 },
   horizontalScroll: { marginBottom: 20 },
   horizontalScrollContent: { paddingHorizontal: 16 },
   newsSection: { paddingHorizontal: 16, marginTop: 4 },

@@ -1,0 +1,1 @@
+export type Screen = 'loading' | 'home' | 'schedule' | 'map';

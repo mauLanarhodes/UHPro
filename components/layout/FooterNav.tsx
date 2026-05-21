@@ -1,20 +1,21 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Screen } from '../../src/types/navigation';
 
 interface Props {
   activeTab: string;
-  onTabPress: (tab: string) => void;
+  onNavigate: (screen: Screen) => void;
 }
 
 const tabs = [
-  { key: 'home',     icon: 'home-outline',         activeIcon: 'home' },
-  { key: 'schedule', icon: 'calendar-outline',      activeIcon: 'calendar' },
-  { key: 'shuttle',  icon: 'bus-outline',           activeIcon: 'bus' },
-  { key: 'helpline', icon: 'help-circle-outline',   activeIcon: 'help-circle' },
+  { key: 'home', icon: 'home-outline', activeIcon: 'home', screen: 'home' as Screen },
+  { key: 'schedule', icon: 'calendar-outline', activeIcon: 'calendar', screen: 'schedule' as Screen },
+  { key: 'shuttle', icon: 'bus-outline', activeIcon: 'bus', screen: 'home' as Screen },
+  { key: 'helpline', icon: 'help-circle-outline', activeIcon: 'help-circle', screen: 'home' as Screen },
 ];
 
-export default function FooterNav({ activeTab, onTabPress }: Props) {
+export default function FooterNav({ activeTab, onNavigate }: Props) {
   return (
     <View style={styles.footer}>
       {tabs.map((tab) => {
@@ -23,7 +24,7 @@ export default function FooterNav({ activeTab, onTabPress }: Props) {
           <TouchableOpacity
             key={tab.key}
             style={[styles.tab, isActive && styles.activeTab]}
-            onPress={() => onTabPress(tab.key)}
+            onPress={() => onNavigate(tab.screen)}
             activeOpacity={0.8}
           >
             <Ionicons
