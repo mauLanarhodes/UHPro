@@ -1,20 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import LoadingScreen from './LoadingScreen';
+import HomeScreen from './HomeScreen';
+
+export type Screen = 'loading' | 'home';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [currentScreen, setCurrentScreen] = useState<Screen>('loading');
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  if (currentScreen === 'loading') {
+    return <LoadingScreen onFinish={() => setCurrentScreen('home')} />;
+  }
+  return <HomeScreen />;
+}
