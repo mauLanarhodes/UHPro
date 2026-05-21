@@ -114,14 +114,18 @@ export default function HomeScreen() {
               <Text style={styles.viewAll}>VIEW ALL</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.taskCardWrapper}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={handleBadgePress}
+            style={styles.taskCardWrapper}
+          >
             <TaskAlertCard
               title={currentFocus.title}
               subtitle={currentFocus.subtitle}
               badge={badge}
               onBadgePress={handleBadgePress}
             />
-          </View>
+          </TouchableOpacity>
 
           {/* University Services */}
           <View style={styles.sectionHeader}>
