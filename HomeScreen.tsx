@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, StyleSheet,
   SafeAreaView, StatusBar, Platform, TouchableOpacity,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen } from './src/types/navigation';
 import ProactiveSuggestionCard from './components/home/ProactiveSuggestionCard';
 import TaskAlertCard from './components/home/TaskAlertCard';
@@ -25,10 +26,10 @@ const universityServices: { icon: string; label: string; screen?: Screen }[] = [
   { icon: 'map-outline',        label: 'Campus\nMap',            screen: 'map' },
 ];
 
-const studentServices = [
-  { label: 'Study\nGroups' },
-  { label: 'Social\n&\nCultural' },
-  { label: 'Student\nClubs' },
+const studentServices: { label: string; screen?: Screen }[] = [
+  { label: 'Study\nGroups', screen: 'studygroups' as Screen },
+  { label: 'Social\n&\nCultural', screen: 'studentorg' as Screen },
+  { label: 'Student\nClubs', screen: 'studyclubs' as Screen },
   { label: 'UH\nEvents' },
 ];
 
@@ -58,13 +59,29 @@ export default function HomeScreen({ onNavigate, activeTab }: Props) {
       <SafeAreaView style={styles.safeArea}>
         {/* HEADER */}
         <View style={styles.header}>
-          <View style={styles.avatarCircle}>
+          {/* Left: avatar taps to Profile */}
+          <TouchableOpacity
+            style={styles.avatarCircle}
+            onPress={() => onNavigate('profile')}
+            activeOpacity={0.8}
+          >
             <Text style={styles.avatarEmoji}>🐨</Text>
-          </View>
+          </TouchableOpacity>
+
+          {/* Center: welcome text */}
           <View style={styles.headerText}>
             <Text style={styles.welcomeText}>Welcome</Text>
             <Text style={styles.nameText}>Talaviya, Khushbu</Text>
           </View>
+
+          {/* Right: QR scanner icon */}
+          <TouchableOpacity
+            style={styles.qrIconBtn}
+            onPress={() => onNavigate('digitalidentity')}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="qr-code-outline" size={22} color="#C8102E" />
+          </TouchableOpacity>
         </View>
 
         <ScrollView
@@ -122,7 +139,7 @@ export default function HomeScreen({ onNavigate, activeTab }: Props) {
             contentContainerStyle={styles.horizontalScrollContent}
           >
             {studentServices.map((s, i) => (
-              <StudentServiceCard key={i} label={s.label} />
+              <StudentServiceCard key={i} label={s.label} onPress={s.screen ? () => onNavigate(s.screen!) : undefined} />
             ))}
           </ScrollView>
 
@@ -155,6 +172,8 @@ const styles = StyleSheet.create({
   avatarEmoji: { fontSize: 22 },
   headerText: { flex: 1 },
   welcomeText: { fontSize: 12, color: '#888', fontWeight: '500' },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  qrIconBtn: { width: 34, height: 34, alignItems: 'center', justifyContent: 'center' },
   nameText: { fontSize: 17, color: '#C8102E', fontWeight: '800' },
   scrollView: { flex: 1 },
   scrollContent: { paddingTop: 8 },
