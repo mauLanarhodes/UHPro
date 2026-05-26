@@ -7,8 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Screen } from './src/types/navigation';
 import ProfileHeroCard from './components/profile/ProfileHeroCard';
 import DigitalStudentCard from './components/profile/DigitalStudentCard';
-import BalanceCard from './components/profile/BalanceCard';
-import PersonalDetailsCard from './components/profile/PersonalDeatilsCard';
+import PersonalDetailsCard from './components/profile/PersonalDetailsCard';
 import SettingsRow from './components/profile/SettingsRow';
 import FooterNav from './components/layout/FooterNav';
 import FloatingAIButton from './components/ai/FloatingAIButton';
@@ -16,12 +15,9 @@ import FloatingAIButton from './components/ai/FloatingAIButton';
 interface Props {
   onNavigate: (screen: Screen) => void;
   onBack: () => void;
+  shastaBucksBalance?: number;
+  diningDollarsBalance?: number;
 }
-
-const BALANCE_ITEMS = [
-  { label: 'ShastaBUCKS', amount: '$18.42', icon: 'card-outline',   iconColor: '#C8102E', iconBg: '#FFEAEA' },
-  { label: 'Dining Dollars', amount: '$143.20', icon: 'restaurant-outline', iconColor: '#2A7B5A', iconBg: '#EAFFF5' },
-];
 
 const PERSONAL_DETAILS = [
   { label: 'UNIVERSITY EMAIL', value: 'ktalaviya@uh.edu',  icon: 'mail-outline'    },
@@ -29,7 +25,13 @@ const PERSONAL_DETAILS = [
   { label: 'ASSIGNED ADVISOR', value: 'Dr. Marcus Sterling', icon: 'school-outline' },
 ];
 
-export default function ProfileScreen({ onNavigate, onBack }: Props) {
+export default function ProfileScreen({ onNavigate, onBack, shastaBucksBalance = 18.42, diningDollarsBalance = 143.20 }: Props) {
+  // Defined inside component so shastaBucksBalance is always current
+  const BALANCE_ITEMS = [
+    { label: 'ShastaBUCKS',    amount: `$${shastaBucksBalance.toFixed(2)}`, icon: 'card-outline',        iconColor: '#C8102E', iconBg: '#FFEAEA' },
+    { label: 'Dining Dollars', amount: `$${diningDollarsBalance.toFixed(2)}`,                           icon: 'restaurant-outline',  iconColor: '#2A7B5A', iconBg: '#EAFFF5' },
+  ];
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF1F1" />
@@ -63,7 +65,23 @@ export default function ProfileScreen({ onNavigate, onBack }: Props) {
           <DigitalStudentCard onScan={() => onNavigate('digitalidentity')} />
 
           {/* Balance */}
-          <BalanceCard items={BALANCE_ITEMS} />
+          {/* Tapping each balance card navigates to its screen */}
+          <View style={styles.balanceRow}>
+            <TouchableOpacity style={styles.balanceSingleCard} onPress={() => onNavigate('shastabucks')} activeOpacity={0.88}>
+              <View style={[styles.balanceIconCircle, { backgroundColor: '#FFEAEA' }]}>
+                <Ionicons name="card-outline" size={18} color="#C8102E" />
+              </View>
+              <Text style={styles.balanceCardLabel}>ShastaBUCKS</Text>
+              <Text style={styles.balanceCardAmount}>${shastaBucksBalance.toFixed(2)}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.balanceSingleCard} onPress={() => onNavigate('diningdollars')} activeOpacity={0.88}>
+              <View style={[styles.balanceIconCircle, { backgroundColor: '#EAFFF5' }]}>
+                <Ionicons name="restaurant-outline" size={18} color="#2A7B5A" />
+              </View>
+              <Text style={styles.balanceCardLabel}>Dining Dollars</Text>
+              <Text style={styles.balanceCardAmount}>${diningDollarsBalance.toFixed(2)}</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Pro-Tip card */}
           <TouchableOpacity style={styles.proTipCard} activeOpacity={0.9}>
@@ -140,4 +158,17 @@ const styles = StyleSheet.create({
   proTipText: { color: 'rgba(255,255,255,0.88)', fontSize: 13, lineHeight: 19 },
   proTipUnderline: { textDecorationLine: 'underline', color: '#FFFFFF' },
   starDecor: { position: 'absolute', right: 12, top: 10 },
+  balanceRow: { flexDirection: 'row', gap: 12, marginBottom: 16 },
+  balanceSingleCard: {
+    flex: 1, backgroundColor: '#FFFFFF', borderRadius: 18,
+    padding: 16, alignItems: 'flex-start',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06, shadowRadius: 8, elevation: 3,
+  },
+  balanceIconCircle: {
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+  },
+  balanceCardLabel: { fontSize: 12, color: '#888', fontWeight: '500', marginBottom: 4 },
+  balanceCardAmount: { fontSize: 20, fontWeight: '800', color: '#1A1A1A' },
 });

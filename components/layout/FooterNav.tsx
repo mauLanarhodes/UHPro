@@ -11,7 +11,7 @@ interface Props {
 const tabs = [
   { key: 'home',     icon: 'home-outline',       activeIcon: 'home',        screen: 'home'     as Screen },
   { key: 'schedule', icon: 'calendar-outline',   activeIcon: 'calendar',    screen: 'schedule' as Screen },
-  { key: 'shuttle',  icon: 'bus-outline',        activeIcon: 'bus',         screen: 'home'     as Screen },
+  { key: 'shuttle',  icon: 'bus-outline',        activeIcon: 'bus',         screen: 'shuttle'  as Screen },
   { key: 'helpline', icon: 'headset-outline',    activeIcon: 'headset',     screen: 'helpline' as Screen },
 ];
 

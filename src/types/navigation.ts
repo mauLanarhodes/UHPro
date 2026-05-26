@@ -1,1 +1,2 @@
-export type Screen = 'loading' | 'home' | 'schedule' | 'map' | 'helpline' | 'studygroups' | 'studyclubs' | 'studentorg' | 'profile' | 'editprofile' | 'events' | 'organizatioin' | 'digitalidentity';
+export type Screen = 'loading' | 'home' | 'schedule' | 'map' | 'helpline' | 'studygroups' | 'studyclubs' | 'studentorg' | 'profile' | 'editprofile' | 'events' | 'organizatioin' | 'digitalidentity' | 'shastabucks' | 'addfunds' | 'dining' | 'addding'| 'shuttle' | 'routedetail' | 'scheduleshuttle' | 'routeSuggestion' | 'liveTracker' | 'additionalService' | 'adddiningdollars' | 'diningdollars';
+ 

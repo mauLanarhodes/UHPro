@@ -21,7 +21,7 @@ interface Props {
 // Each service card can optionally navigate to a screen
 const universityServices: { icon: string; label: string; screen?: Screen }[] = [
   { icon: 'calendar-outline',   label: 'Schedule &\nAssignment', screen: 'schedule' },
-  { icon: 'bus-outline',        label: 'Shuttle' },
+  { icon: 'bus-outline',        label: 'Shuttle',            screen: 'shuttle' as Screen },
   { icon: 'restaurant-outline', label: 'Dining' },
   { icon: 'map-outline',        label: 'Campus\nMap',            screen: 'map' },
 ];
